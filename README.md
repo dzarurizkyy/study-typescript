@@ -93,10 +93,7 @@ This repository contains a comprehensive reference guide for TypeScript — cove
 
 ## 📍 References
 
-- [TypeScript Documentation](https://www.typescriptlang.org/docs/)
-- [Zod Documentation](https://zod.dev/)
-- [Express Documentation](https://expressjs.com/)
-- [Prisma Documentation](https://www.prisma.io/)
+- [Udemy](https://www.udemy.com/course/belajar-typescript)
 
 ## 👨‍💻 Contributors
 
