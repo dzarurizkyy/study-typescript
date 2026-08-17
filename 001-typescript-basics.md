@@ -356,7 +356,7 @@ Found 3 errors. Watching for file changes.
 
 ### Array
 
-Array types work the same way as in JavaScript. TypeScript supports two syntaxes: `TipeData[]` or `Array<TipeData>`.
+Array types work the same way as in JavaScript. TypeScript supports two syntaxes: `DataType[]` or `Array<DataType>`.
 
 ```typescript
 it("should same with javasript", function () {
