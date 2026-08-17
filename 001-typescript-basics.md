@@ -413,7 +413,7 @@ it("should support tuple", function () {
 
 ```typescript
 describe("Any", function () {
-  it("should supprt in typescript", function () {
+  it("should support in typescript", function () {
     const person: any = {
       id: 1,
       name: "Dzaru Rizky",
