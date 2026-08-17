@@ -290,7 +290,7 @@ describe("Data Type", function () {
 
 ```typescript
 describe("Data Type", function () {
-  it("should must desclare", function () {
+  it("should must declare", function () {
     let name: string = "Dzaru Rizky Fathan Fortuna";
     let balance: number = 100_000_000;
     let isVip: boolean = true;
