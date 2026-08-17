@@ -259,14 +259,14 @@ TypeScript reuses JavaScript's data types, so `string`, `number`, and `boolean` 
 - TypeScript can infer a variable's type automatically, or you can declare it explicitly:
 
 ```typescript
-const namaVariable: tipeData = value;
+const variableName: dataType = value;
 ```
 
 **`basic-typescript/tests/data-type.test.ts`**
 
 ```typescript
 describe("Data Type", function () {
-  it("should must desclare", function () {
+  it("should must declare", function () {
     const name: string = "Dzaru Rizky Fathan Fortuna";
     const balance: number = 100_000_000;
     const isVip: boolean = true;
