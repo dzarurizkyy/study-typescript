@@ -164,7 +164,7 @@ export function sayHello(name: string): string {
 import { sayHello } from "../src/say-hello";
 
 describe("sayHello", () => {
-  it("should return hello eko", () => {
+  it("should return hello dzaru", () => {
     expect(sayHello("Dzaru")).toBe("Hello Dzaru");
   });
 });
