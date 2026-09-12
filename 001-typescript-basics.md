@@ -81,6 +81,8 @@ A practical reference guide for learning TypeScript from scratch — covering pr
 - **Automatic transpilation** — Because TypeScript compiles to JavaScript, you don't need to worry about which JavaScript features are unsupported in your target environment; TypeScript handles that automatically
 - **Ecosystem momentum** — Popular frameworks such as React, Vue, and NestJS increasingly default to TypeScript
 
+> **Key Insight:** Every type annotation TypeScript adds is erased at compile time — the emitted JavaScript has no trace of `string`, `number`, or `interface`. Type safety only protects you while writing and building code, never at runtime; see [Babel and TypeScript](#babel-and-typescript) for what that means in practice.
+
 ---
 
 ## 🏗️ Project Setup
@@ -96,6 +98,8 @@ npm init
 ```
 
 - Open `package.json` and add `"type": "module"`
+
+> **Note:** `"type": "module"` switches `package.json` to native ES modules, which is why every example in this guide uses `import`/`export` syntax instead of CommonJS `require`.
 
 ### Adding Jest for Unit Testing
 
@@ -174,7 +178,7 @@ describe("sayHello", () => {
 npm test
 ```
 
-```
+```text
 > typescript-basic@1.0.0 test
 > jest
 
@@ -197,6 +201,8 @@ Tests:       2 passed, 2 total
 
 By default, TypeScript tries to compile every `.ts` file it finds. Usually you only want to compile source code — not unit tests.
 
+> **Gotcha:** Without an explicit `include`/`exclude`, `tsc` compiles every `.ts` file under the project root (aside from `node_modules`) — test files included. That's why the `tsconfig.json` below excludes `tests/**/*` explicitly.
+>
 > Reference: [include](https://www.typescriptlang.org/tsconfig#include) · [exclude](https://www.typescriptlang.org/tsconfig#exclude)
 
 ```json
@@ -246,11 +252,11 @@ By default, TypeScript tries to compile every `.ts` file it finds. Usually you o
 
 TypeScript reuses JavaScript's data types, so `string`, `number`, and `boolean` are supported automatically.
 
-| Primitive Type | Description        |
-| --------------- | ------------------- |
-| `number`        | JavaScript's Number  |
-| `boolean`       | JavaScript's Boolean |
-| `string`        | JavaScript's String  |
+| Primitive Type | Description |
+| --- | --- |
+| `number` | JavaScript's Number |
+| `boolean` | JavaScript's Boolean |
+| `string` | JavaScript's String |
 
 ### Variable Declaration
 
@@ -286,6 +292,8 @@ describe("Data Type", function () {
 - As a result, type errors that *should* fail your unit tests sometimes slip through, because Babel simply erases the TypeScript annotations
 - You must still run `npx tsc` regularly to catch real type errors
 
+> **Gotcha:** `npm test` alone cannot catch type errors — Babel only strips annotations like `: string` and `: number` without validating them. A build is only safe once `npx tsc` has also run clean; see [Best Practices](#-best-practices).
+
 **`basic-typescript/tests/data-type.test.ts`**
 
 ```typescript
@@ -310,7 +318,7 @@ describe("Data Type", function () {
 npx tsc
 ```
 
-```
+```text
 tests/data-type.test.ts:11:5 - error TS2322: Type 'number' is not assignable to type 'string'.
 tests/data-type.test.ts:12:5 - error TS2322: Type 'string' is not assignable to type 'number'.
 tests/data-type.test.ts:13:5 - error TS2322: Type 'number' is not assignable to type 'boolean'.
@@ -322,7 +330,7 @@ Found 3 errors in the same file, starting at: tests/data-type.test.ts:11
 npm run test
 ```
 
-```
+```text
 PASS dist/tests/say-hello.test.js
 PASS dist/tests/hello.test.js
 PASS dist/tests/data-type.test.js
@@ -337,7 +345,7 @@ Snapshots:   0 total
 
 `tsc` in watch mode reports the same three errors, and clears them once the invalid assignments are removed:
 
-```
+```text
 [04:56:07 PM] File change detected. Starting incremental compilation...
 
 tests/data-type.test.ts:11:5 - error TS2322: Type 'number' is not assignable to type 'string'.
@@ -381,6 +389,8 @@ it("should support readonly array", function () {
 });
 ```
 
+> **Tip:** Reach for `ReadonlyArray` on function parameters and returned data you don't want the caller mutating. It's a compile-time guarantee only, though — an [`as` type assertion](#type-assertions) can still strip it back to a mutable array at runtime.
+
 ### Tuple
 
 A tuple is an array type where both the length and the type at each index are fixed. A tuple can also be marked `readonly` to make it immutable.
@@ -395,6 +405,8 @@ it("should support tuple", function () {
   console.info(person[2]);
 });
 ```
+
+> **Note:** Unlike a plain `Array`, a tuple's length is fixed and each index carries its own type — `person[2]` is guaranteed `number`, never `string`. Marking it `readonly` (as above) blocks both reassigning an element and pushing a new one.
 
 ---
 
@@ -471,6 +483,8 @@ it("should support typeof operator", function () {
 });
 ```
 
+> **Tip:** `typeof` narrowing only covers primitives (`string`, `number`, `boolean`, etc.). Narrowing objects or arrays instead relies on `instanceof` checks, discriminated union tags, or a user-defined type guard.
+
 ---
 
 ## 🏷️ Type Alias & Object Types
@@ -498,6 +512,8 @@ export type Product = {
   category: Category;
 };
 ```
+
+> **Note:** A `type` alias and an `interface` overlap heavily for object shapes. This guide uses `type` for unions and simple shapes, and reaches for `interface` (see [Interface](#-interface)) whenever a shape is expected to grow later via `extends`.
 
 ### Type Alias for Union Types
 
@@ -575,6 +591,8 @@ export type Product = {
 };
 ```
 
+> **Note:** `description?: string` is shorthand for `description: string | undefined` — reading an optional property that wasn't provided returns `undefined`, so guard it the same way covered in [Null and Undefined](#null-and-undefined).
+
 ---
 
 ## 🔀 Enum, Null & Undefined
@@ -616,6 +634,8 @@ describe("Enum", function () {
   });
 });
 ```
+
+> **Note:** These enum members are declared as strings (`REGULAR = "REGULAR"`), which is why they read cleanly in logs and JSON. Omit the initializer (`enum X { A, B }`) and TypeScript falls back to auto-incrementing numbers starting at `0` instead.
 
 ### Null and Undefined
 
@@ -770,6 +790,8 @@ it("should support extends interface", function () {
 });
 ```
 
+> **Tip:** Unlike a class, an interface can `extends` more than one interface at once (`interface Manager extends Employee, Timestamped { ... }`), which makes composing several shapes together straightforward.
+
 ### Functions in Interface
 
 Under the hood, an interface is implemented as a JavaScript object — and just like an object can hold a function as an attribute, so can an interface.
@@ -821,11 +843,13 @@ it("should support intersection types", function () {
 });
 ```
 
+> **Note:** Intersection types (`&`) and `interface extends` solve the same problem from opposite directions — reach for `&` when combining two existing `type` aliases, and `extends` when defining a new `interface` from scratch (see [Extending Interface](#extending-interface)).
+
 ### Type Assertions
 
 Sometimes you know a value's real type even though TypeScript doesn't — typically when working with JavaScript code that returns `any`. In that case, convert the value to the type you want using the `as` keyword. This is called a **type assertion**.
 
-> ⚠️ A type assertion only affects the compiler's view of the value — it performs no runtime check. Asserting the wrong shape compiles cleanly and fails at runtime instead.
+> ⚠️ **Warning:** A type assertion only affects the compiler's view of the value — it performs no runtime check. Asserting the wrong shape compiles cleanly and fails at runtime instead.
 
 ```typescript
 it("should support type assertions", function () {
@@ -841,7 +865,7 @@ it("should support type assertions", function () {
 });
 ```
 
-```
+```text
 TypeError: person2.sayHello is not a function
 
   104 |
@@ -932,6 +956,8 @@ it("should suppport optional parameter", function () {
 });
 ```
 
+> **Note:** Just like JavaScript, a required parameter can't follow an optional or default one — `function f(a?: string, b: string)` is a compile error. A rest parameter must always come last in the list.
+
 ### Function Overloading
 
 Function overloading lets you declare a function with the same name but different parameter signatures. In JavaScript, writing one function that accepts different input shapes and returns different output shapes is common — but this can make a function unsafe, since its output type becomes unpredictable. TypeScript's function overloading makes this pattern safer.
@@ -954,6 +980,8 @@ it("should support function overloading", function () {
   expect(callMe("dzaru")).toBe("dzaru");
 });
 ```
+
+> **Note:** Only the overload signatures (`function callMe(value: number): number;` etc.) are visible to callers — the implementation signature (`function callMe(value: any): any`) is erased along with every other type annotation, the same way covered in the [Introduction](#-introduction).
 
 ### Function as Parameter
 
@@ -1142,22 +1170,22 @@ The one difference: because TypeScript is strongly typed, every variable and par
 
 ## 🎯 Quick Reference
 
-| Concept                  | Purpose                                     | Key Syntax                               |
-| ------------------------- | -------------------------------------------- | ------------------------------------------ |
-| **Primitive Types**      | Basic values reused from JavaScript          | `string`, `number`, `boolean`              |
-| **Array**                 | Ordered list of a single type                | `string[]` or `Array<string>`              |
-| **ReadonlyArray**          | Immutable array                               | `ReadonlyArray<string>`                    |
-| **Tuple**                  | Fixed-length array with per-index types       | `[string, number]`                         |
-| **Any**                    | Opt out of type checking                      | `any`                                      |
-| **Union Type**            | Variable that accepts multiple types          | `number \| string`                         |
-| **Type Alias**             | Name a custom (often object) type             | `type Product = { ... }`                   |
-| **Object Type**           | Inline object shape                            | `{ id: string; name: string }`             |
-| **Optional Property**     | Attribute that may be omitted                  | `description?: string`                     |
-| **Enum**                   | Fixed set of named values                      | `enum Status { ACTIVE, INACTIVE }`         |
-| **Interface**              | Extensible object/function contract            | `interface Seller { ... }`                 |
-| **Intersection Type**      | Combine multiple types into one               | `type Domain = HasId & HasName`             |
-| **Type Assertion**         | Force TypeScript to trust a type              | `value as Person`                           |
-| **Function Overloading**   | Multiple signatures, one implementation        | `function callMe(value: number): number;`   |
+| Concept | Purpose | Key Syntax |
+| --- | --- | --- |
+| **Primitive Types** | Basic values reused from JavaScript | `string`, `number`, `boolean` |
+| **Array** | Ordered list of a single type | `string[]` or `Array<string>` |
+| **ReadonlyArray** | Immutable array | `ReadonlyArray<string>` |
+| **Tuple** | Fixed-length array with per-index types | `[string, number]` |
+| **Any** | Opt out of type checking | `any` |
+| **Union Type** | Variable that accepts multiple types | `number \| string` |
+| **Type Alias** | Name a custom (often object) type | `type Product = { ... }` |
+| **Object Type** | Inline object shape | `{ id: string; name: string }` |
+| **Optional Property** | Attribute that may be omitted | `description?: string` |
+| **Enum** | Fixed set of named values | `enum Status { ACTIVE, INACTIVE }` |
+| **Interface** | Extensible object/function contract | `interface Seller { ... }` |
+| **Intersection Type** | Combine multiple types into one | `type Domain = HasId & HasName` |
+| **Type Assertion** | Force TypeScript to trust a type | `value as Person` |
+| **Function Overloading** | Multiple signatures, one implementation | `function callMe(value: number): number;` |
 
 ---
 
