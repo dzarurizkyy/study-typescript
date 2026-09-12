@@ -7,6 +7,9 @@ A practical reference guide for learning TypeScript from scratch — covering pr
 ## 📋 Table of Contents
 
 - [Introduction](#-introduction)
+  - [What Is TypeScript?](#what-is-typescript)
+  - [Why Learn TypeScript?](#why-learn-typescript)
+  - [The Toolchain at a Glance](#the-toolchain-at-a-glance)
 - [Project Setup](#-project-setup)
   - [Creating the Project](#creating-the-project)
   - [Adding Jest for Unit Testing](#adding-jest-for-unit-testing)
@@ -37,6 +40,7 @@ A practical reference guide for learning TypeScript from scratch — covering pr
   - [Enum](#enum)
   - [Null and Undefined](#null-and-undefined)
 - [Interface](#-interface)
+  - [Type Alias vs Interface](#type-alias-vs-interface)
   - [Readonly Properties](#readonly-properties)
   - [Function Interface](#function-interface)
   - [Indexable Interface](#indexable-interface)
@@ -59,6 +63,7 @@ A practical reference guide for learning TypeScript from scratch — covering pr
   - [Do While Loop](#do-while-loop)
   - [Break and Continue](#break-and-continue)
 - [JavaScript Features in TypeScript](#-javascript-features-in-typescript)
+- [Compilation Flow](#-compilation-flow)
 - [Quick Reference](#-quick-reference)
 - [Best Practices](#-best-practices)
 
@@ -66,7 +71,7 @@ A practical reference guide for learning TypeScript from scratch — covering pr
 
 ## 🎯 Introduction
 
-**What is TypeScript?**
+### What Is TypeScript?
 
 - TypeScript is an object-oriented programming language created by Microsoft
 - It **compiles down** to plain JavaScript — browsers and Node.js never run TypeScript directly
@@ -75,13 +80,26 @@ A practical reference guide for learning TypeScript from scratch — covering pr
 
 > Reference: [typescriptlang.org](https://www.typescriptlang.org/)
 
-**Why Learn TypeScript?**
+### Why Learn TypeScript?
 
 - **Wide adoption** — Many companies have adopted TypeScript because it removes a lot of the friction of programming at scale
 - **Automatic transpilation** — Because TypeScript compiles to JavaScript, you don't need to worry about which JavaScript features are unsupported in your target environment; TypeScript handles that automatically
 - **Ecosystem momentum** — Popular frameworks such as React, Vue, and NestJS increasingly default to TypeScript
 
-> **Key Insight:** Every type annotation TypeScript adds is erased at compile time — the emitted JavaScript has no trace of `string`, `number`, or `interface`. Type safety only protects you while writing and building code, never at runtime; see [Babel and TypeScript](#babel-and-typescript) for what that means in practice.
+### The Toolchain at a Glance
+
+TypeScript is not one tool but several, and knowing which piece does what explains most of the surprises later in this guide:
+
+| Piece | Role |
+| --- | --- |
+| `typescript` (`tsc`) | The compiler and type checker — the **only** tool here that actually validates types |
+| `tsconfig.json` | Every compiler setting: which files to compile, which JavaScript to emit, how strict to be |
+| `@babel/preset-typescript` | Strips type annotations so Jest can run tests — without checking them |
+| `jest` | The test runner used throughout this guide |
+| `@types/*` | Type definitions for libraries that ship plain JavaScript |
+| `dist/` | Where compiled JavaScript lands — the only code Node.js or a browser ever runs |
+
+> **Key Insight:** Every type annotation TypeScript adds is erased at compile time — the emitted JavaScript has no trace of `string`, `number`, or `interface`. Type safety only protects you while writing and building code, never at runtime. [Compilation Flow](#-compilation-flow) traces that pipeline end to end, and [Babel and TypeScript](#babel-and-typescript) shows what it means in practice.
 
 ---
 
@@ -362,6 +380,8 @@ Found 3 errors. Watching for file changes.
 
 ## 📦 Array Types
 
+Arrays carry over from JavaScript unchanged. What TypeScript adds is a declaration of what lives *inside* the array — and, for a tuple, how fixed its shape is.
+
 ### Array
 
 Array types work the same way as in JavaScript. TypeScript supports two syntaxes: `DataType[]` or `Array<DataType>`.
@@ -411,6 +431,8 @@ it("should support tuple", function () {
 ---
 
 ## 🎭 Any & Union Types
+
+Both exist for values that aren't a single fixed type — but they differ completely in what they give up. `any` abandons checking entirely; a union type keeps it, listing exactly which types are allowed.
 
 ### Any
 
@@ -488,6 +510,8 @@ it("should support typeof operator", function () {
 ---
 
 ## 🏷️ Type Alias & Object Types
+
+Once a value is an object rather than a primitive, its shape needs declaring — either inline on the variable itself, or once as a named alias that can be reused everywhere.
 
 ### Type Alias
 
@@ -597,6 +621,8 @@ export type Product = {
 
 ## 🔀 Enum, Null & Undefined
 
+Cases where TypeScript expresses something JavaScript cannot: a fixed set of allowed values, and the difference between a value that is merely absent and one that is explicitly empty.
+
 ### Enum
 
 TypeScript's `enum` type represents a fixed set of possible values — a type JavaScript doesn't have natively. By default, an enum's members compile to strings in JavaScript, though they can also be numeric.
@@ -668,6 +694,18 @@ describe("Optional parameter", function () {
 ## 🧩 Interface
 
 > **Key Insight:** `interface` and `type` overlap heavily, but interfaces are easier to extend incrementally. That's why most TypeScript developers reach for `interface` on complex, evolving data shapes.
+
+### Type Alias vs Interface
+
+For a plain data shape the two are interchangeable. The differences only surface once that shape has to grow:
+
+| | `type` | `interface` |
+| --- | --- | --- |
+| Object shapes | Yes | Yes |
+| Unions (`number \| string`) | Yes | No |
+| Combine with another shape | `&` — an [intersection type](#intersection-types) | `extends` |
+| Re-opened by a later declaration | No | Yes — same-name interfaces merge |
+| Best for | Unions, primitives, one-off shapes | Evolving object and function contracts |
 
 ### Readonly Properties
 
@@ -818,6 +856,8 @@ it("should support function in interface", function () {
 
 ## 🔗 Intersection Types & Type Assertions
 
+Two ways of reshaping types you already have — one the compiler verifies, and one it simply believes.
+
 ### Intersection Types
 
 An intersection type combines two existing types into a new one. It's especially useful when `extends` isn't an option on an interface. Combine types with the `&` operator.
@@ -882,6 +922,8 @@ TypeError: person2.sayHello is not a function
 ---
 
 ## ⚙️ Functions
+
+Functions are where most annotations end up: every parameter and every return value is a contract the compiler can check at each call site.
 
 ### Function Declaration
 
@@ -1009,6 +1051,8 @@ it("should function as parameter", function () {
 ---
 
 ## 🔁 Control Flow & Loops
+
+Control flow is pure JavaScript — none of the syntax below is new. What TypeScript adds is invisible: it follows each branch and narrows types as conditions are tested, which is what makes [narrowing a union type](#narrowing-a-union-type) work.
 
 ### If Statement
 
@@ -1168,6 +1212,50 @@ The one difference: because TypeScript is strongly typed, every variable and par
 
 ---
 
+## 🔄 Compilation Flow
+
+Knowing what `tsc` actually does — and what it deliberately does not — is what makes the rest of this guide click. A project like this one has **two** pipelines, and only one of them checks types:
+
+```text
+src/*.ts                          the code you write
+  ↓
+── Type checking ───────────────   npx tsc
+  ↓
+Parse + bind                      names, scopes, imports
+  ↓
+Type inference                    the type of every expression you didn't annotate
+  ↓
+Type check                        assignability, narrowing, overload resolution
+  ↓                               errors are reported here — and only here
+Type erasure                      annotations, interfaces and type aliases removed
+  ↓
+Emit                              dist/*.js (+ .d.ts, .js.map) per tsconfig.json
+  ↓
+Node.js / the browser runs plain JavaScript
+
+
+tests/*.test.ts                   the Jest pipeline, in parallel
+  ↓
+babel-jest + @babel/preset-typescript
+  ↓
+Type erasure                      annotations stripped, nothing checked
+  ↓
+Jest runs the JavaScript          tests can pass while tsc still reports errors
+```
+
+That split explains the behaviour that surprises people throughout this guide:
+
+| Question | Answer |
+| --- | --- |
+| Why do my tests pass while `tsc` reports errors? | Jest compiles through Babel, which erases annotations without validating them — only `tsc` type-checks |
+| Why is there no type information at runtime? | Every type is erased before emit, so `typeof` sees JavaScript values, never your `interface` |
+| Why does a [type assertion](#type-assertions) fail at runtime? | `as` changes what the checker believes, and nothing survives to runtime to verify it |
+| Why does an `enum` exist at runtime when an `interface` doesn't? | `enum` emits a real JavaScript object; `interface` and `type` emit nothing at all |
+| Why does an optional parameter need a guard? | `?` widens the type to include `undefined`, and `strict` mode forces you to handle it |
+| Why was my new `.ts` file never compiled? | [`include` and `exclude`](#include-and-exclude) in `tsconfig.json` decide what `tsc` even looks at |
+
+---
+
 ## 🎯 Quick Reference
 
 | Concept | Purpose | Key Syntax |
@@ -1185,7 +1273,16 @@ The one difference: because TypeScript is strongly typed, every variable and par
 | **Interface** | Extensible object/function contract | `interface Seller { ... }` |
 | **Intersection Type** | Combine multiple types into one | `type Domain = HasId & HasName` |
 | **Type Assertion** | Force TypeScript to trust a type | `value as Person` |
+| **Readonly Property** | Attribute that can't be reassigned | `readonly nib?: string` |
+| **Narrowing** | Make a union safe to use | `if (typeof value === "string")` |
+| **Function Interface** | Type the shape of a function | `interface Add { (a: number, b: number): number }` |
+| **Indexable Interface** | Type an array- or dictionary-like shape | `[key: string]: string` |
 | **Function Overloading** | Multiple signatures, one implementation | `function callMe(value: number): number;` |
+| **Optional Parameter** | Argument that may be omitted | `function f(name?: string)` |
+| **Default Parameter** | Argument with a fallback value | `function f(name: string = "Guest")` |
+| **Rest Parameter** | Variable number of arguments | `function sum(...values: number[])` |
+| **Callback Parameter** | Pass a function into a function | `filter: (name: string) => string` |
+| **Void** | Function that returns nothing | `function printHello(name: string): void` |
 
 ---
 
@@ -1194,14 +1291,27 @@ The one difference: because TypeScript is strongly typed, every variable and par
 **✅ Do This**
 
 - **Run `tsc` regularly** — Babel strips TypeScript syntax without checking it, so `npm test` alone can hide real type errors
-- **Prefer `interface` for evolving shapes** — easier to extend later than a `type`
+- **Keep `"strict": true` in `tsconfig.json`** — it turns on `strictNullChecks`, which is what forces `null` and `undefined` to be handled explicitly
+- **Scope compilation with `include` and `exclude`** so `tsc` compiles `src/` rather than every `.ts` file it can find
+- **Let inference do the obvious work**, and annotate deliberately where it isn't obvious — function parameters and return types especially
+- **Prefer `interface` for evolving object shapes** — easier to extend later than a `type`
+- **Use `type` for unions, primitives and one-off shapes** — an `interface` cannot express `number | string`
 - **Mark truly optional data with `?`** — don't default everything to optional just to avoid type errors
-- **Use `readonly`** for values that should never be reassigned after creation
+- **Use `readonly` and `ReadonlyArray`** for values that should never be reassigned after creation
 - **Narrow union types with `typeof`** before calling type-specific methods
+- **Give exported functions an explicit return type** — the error then surfaces at the function, not at every call site
+- **Reach for function overloading** when a function genuinely takes different input shapes, so callers keep a precise return type
 
 **❌ Avoid This**
 
 - **Defaulting to `any`** — it silently disables the type checker; reserve it for untyped third-party data
 - **Trusting a type assertion (`as`) blindly** — it isn't a runtime check, so an incorrect assertion still compiles and only fails when the code actually runs
+- **Using `as` to silence an error you don't understand** — narrow the value or fix the type instead
 - **Skipping `tsc` because tests pass** — Babel-compiled tests can pass even with real type errors present
-- **Column-per-type-hack workarounds** — if a variable needs multiple shapes, declare a union type instead of using `any`
+- **Expecting types to exist at runtime** — every annotation is erased before the JavaScript is emitted
+- **Declaring a required parameter after an optional one** — it's a compile error, exactly as it would be in JavaScript
+- **Reaching for a numeric `enum` when the values get logged or serialized** — string enums stay readable in JSON
+- **Repeating the same object shape inline in several places** — name it once as a `type` or an `interface`
+- **Assuming a `readonly` array is immutable at runtime** — the guarantee disappears the moment it's asserted back to a mutable one
+
+> Reference: [TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/intro.html) · [tsconfig reference](https://www.typescriptlang.org/tsconfig) · [Jest with TypeScript](https://jestjs.io/docs/getting-started#using-typescript)
