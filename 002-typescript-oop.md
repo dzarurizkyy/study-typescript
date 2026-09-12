@@ -10,6 +10,7 @@ A practical reference guide for object-oriented programming in TypeScript — co
   - [What is Object-Oriented Programming?](#what-is-object-oriented-programming)
   - [What is an Object?](#what-is-an-object)
   - [What is a Class?](#what-is-a-class)
+  - [Terminology at a Glance](#terminology-at-a-glance)
   - [OOP in TypeScript](#oop-in-typescript)
 - [Project Setup](#-project-setup)
   - [Creating the Project](#creating-the-project)
@@ -29,6 +30,7 @@ A practical reference guide for object-oriented programming in TypeScript — co
 - [Inheritance](#-inheritance)
   - [Extending a Class](#extending-a-class)
   - [Interface Inheritance](#interface-inheritance)
+  - [extends vs implements](#extends-vs-implements)
   - [Super Constructor](#super-constructor)
   - [Method Overriding](#method-overriding)
   - [Super Method](#super-method)
@@ -43,6 +45,7 @@ A practical reference guide for object-oriented programming in TypeScript — co
 - [Class Relationships](#-class-relationships)
 - [Error Handling](#-error-handling)
 - [Namespace](#-namespace)
+- [Object Lifecycle](#-object-lifecycle)
 - [Quick Reference](#-quick-reference)
 - [Best Practices](#-best-practices)
 
@@ -50,31 +53,46 @@ A practical reference guide for object-oriented programming in TypeScript — co
 
 ## 🎯 Introduction
 
-**What is Object-Oriented Programming?**
+### What is Object-Oriented Programming?
 
 - Object-Oriented Programming (OOP) is a programming paradigm built around the concept of "objects"
 - Many programming paradigms exist, but OOP is by far the most popular today
 - Two core terms are essential to understanding OOP: **Object** and **Class**
 
-**What is an Object?**
+### What is an Object?
 
 - An object is data that holds fields / properties / attributes, and methods / functions / behavior
 
-**What is a Class?**
+### What is a Class?
 
 - A class is a blueprint, prototype, or template used to create objects
 - A class declares all the properties and functions that its objects will have
 - Every object is always created from a class
 - A single class can create an unlimited number of objects
 
-**OOP in TypeScript**
+### Terminology at a Glance
 
-> **Key Insight:** TypeScript's OOP features ultimately compile down to plain JavaScript objects and prototypes — the syntax is safer, but the runtime model underneath is still JavaScript's.
+Every term in this guide maps onto one of a handful of ideas:
+
+| Term | Meaning |
+| --- | --- |
+| **Class** | The blueprint — declares what its objects will have |
+| **Object** / **Instance** | One concrete thing built from that blueprint with `new` |
+| **Property** / **Field** | A value that belongs to an object |
+| **Method** | A function that belongs to an object |
+| **Constructor** | The method that runs once, as the object is created |
+| **Inheritance** | A class taking on everything its parent class declares |
+| **Polymorphism** | Treating a subclass instance as its parent type |
+| **Abstract class** | A blueprint left deliberately unfinished, meant to be inherited |
+
+### OOP in TypeScript
 
 - OOP in TypeScript is implemented by compiling down to JavaScript code
 - JavaScript itself was originally designed as a procedural language, not an object-oriented one
 - Because of that, OOP in JavaScript isn't as fully-featured as in languages built from the ground up around OOP, such as Java or C++
 - OOP in TypeScript works almost identically to OOP in JavaScript — a solid grasp of JavaScript's OOP model carries over directly
+
+> **Key Insight:** TypeScript's OOP features ultimately compile down to plain JavaScript objects and prototypes — the syntax is safer, but the runtime model underneath is still JavaScript's. [Object Lifecycle](#-object-lifecycle) traces exactly which half of that does what.
 
 ---
 
@@ -221,7 +239,11 @@ npm install --save-dev ts-jest
 
 ---
 
-## 🧱 Class Basics
+## 🧩 Class Basics
+
+A class declares the shape; `new` turns that declaration into an actual object. Everything else in this guide builds on those two steps.
+
+> Reference: [typescriptlang.org — Classes](https://www.typescriptlang.org/docs/handbook/2/classes.html)
 
 ### Creating a Class
 
@@ -240,6 +262,8 @@ describe("Class", () => {
   });
 });
 ```
+
+> **Note:** `const customer: Customer = new Customer()` annotates the type explicitly, while `const order = new Order()` lets TypeScript infer it. Both are identical to the compiler — the annotation only earns its place when it differs from what would be inferred.
 
 ### Constructor
 
@@ -269,9 +293,13 @@ describe("Class", () => {
 });
 ```
 
+> **Gotcha:** A class only gets a free no-argument constructor while it doesn't declare one. As soon as a constructor takes parameters, every `new` call has to supply them — which is why `Order`, with no constructor at all, still works as `new Order()`.
+
 ---
 
-## 📋 Properties & Methods
+## 🔧 Properties & Methods
+
+The members a class declares come in two kinds: properties, which hold state, and methods, which act on it. TypeScript requires both to be declared before use — the one real departure from JavaScript here.
 
 ### Properties and Fields
 
@@ -280,6 +308,8 @@ describe("Class", () => {
 - In TypeScript, a property must be declared explicitly, along with its type
 - Just like attributes on a `type` or `interface`, class properties can also be optional, mandatory, or `readonly`
 - Mandatory properties must be assigned a value inside the constructor
+
+> **Gotcha:** Under `"strict": true`, a required property must be *definitely* assigned by the time the constructor finishes. Declaring `name: string` and forgetting to set it is a compile error (TS2564), not the silent `undefined` it would be in JavaScript.
 
 ### Default Values
 
@@ -307,6 +337,8 @@ describe("Properties", () => {
   });
 });
 ```
+
+> **Note:** A property with a default value doesn't need assigning in the constructor — `name: string = "Guest"` already satisfies the checker. `readonly id` still does, because `readonly` blocks assignment everywhere *except* the declaration itself and the constructor.
 
 ### Methods
 
@@ -345,6 +377,8 @@ describe("Properties", () => {
 });
 ```
 
+> **Tip:** Annotate `void` when a method returns nothing, as `sayHello` does here. It states the intent, and it stops a later `return someValue` from quietly changing the method's contract.
+
 ### Getters and Setters
 
 Up to now, changing a property has meant using `=` directly, and reading one has meant using `.`. JavaScript has a feature called getters and setters, and so does TypeScript — a method dedicated to reading a property, and another dedicated to writing it. Because they're just methods, you can add any validation you like before the underlying property actually changes.
@@ -381,9 +415,13 @@ describe("Getter and Setter", () => {
 });
 ```
 
+> **Key Insight:** These are ordinary methods, called as `category.getName()`. TypeScript also supports *real* accessors via the `get` and `set` keywords — `get name(): string { ... }` and `set name(value: string) { ... }` — which are used like a plain property (`category.name = "Food"`) while still running the validation in between. The `_name` prefix convention exists precisely so the accessor can take the clean name.
+
 ---
 
 ## 🧬 Inheritance
+
+Inheritance is the mechanism behind most of the rest of this guide: [polymorphism](#polymorphism), [abstract classes](#-abstract-classes) and [`instanceof`](#the-instanceof-operator) all depend on the parent-child chain built here.
 
 ### Extending a Class
 
@@ -417,6 +455,8 @@ describe("Class", () => {
   });
 });
 ```
+
+> **Note:** `Manager` declares no constructor of its own, so it inherits `Employee`'s — which is why `new Manager("Rizky")` works and `manager.name` is populated. Declaring any constructor on the child makes [`super(...)`](#super-constructor) mandatory.
 
 ### Interface Inheritance
 
@@ -453,6 +493,20 @@ describe("Interface", () => {
 });
 ```
 
+> **Key Insight:** `implements` inherits nothing — it only *checks* that the class supplies every member the interface names. `Person` still writes `name` and `sayHello` itself; the interface just guarantees they exist. That's exactly why a class can implement many interfaces but extend only one parent.
+
+### extends vs implements
+
+Both appear in a class declaration and both mention another type, but they do entirely different jobs:
+
+| | `extends` | `implements` |
+| --- | --- | --- |
+| Purpose | Inherit an implementation from a parent | Commit to a contract |
+| How many allowed | One parent class | Any number of interfaces |
+| Brings code with it | Yes — properties and method bodies | No — you write every member yourself |
+| Exists at runtime | Yes — a real prototype chain | No — erased at compile time |
+| Works with `instanceof` | Yes | No |
+
 ### Super Constructor
 
 When a child class defines its own constructor, it must call the parent class's constructor — just like in JavaScript. Use the `super` keyword to call the parent class's constructor.
@@ -484,6 +538,8 @@ describe("Super Constructor", () => {
   });
 });
 ```
+
+> **Gotcha:** `super(name)` has to run before the first use of `this` — swapping those two lines is a compile error, and in plain JavaScript it throws a `ReferenceError` at runtime. The parent must finish building the object before the child can add to it.
 
 ### Method Overriding
 
@@ -520,6 +576,8 @@ describe("Method Overriding", () => {
   });
 });
 ```
+
+> **Tip:** Enable `noImplicitOverride` in `tsconfig.json` (it sits in the commented-out "Style Options" block above) and TypeScript will require an explicit `override` keyword on `Manager.sayHello`. That catches the case where the parent's method is later renamed and the "override" silently becomes a brand-new method instead.
 
 ### Super Method
 
@@ -567,17 +625,19 @@ describe("Super Method", () => {
 });
 ```
 
+> **Note:** `super.sayHello(name)` runs the parent's implementation before adding to it. Without that call, `Manager.sayHello` would replace `Employee`'s version outright — which is the difference between *extending* behaviour and discarding it.
+
 ---
 
 ## 🔐 Visibility
 
 In JavaScript and TypeScript, properties and methods are accessible both inside and outside a class by default (`public`). JavaScript has private properties/methods using the `#` prefix, which restricts access to inside the class only. TypeScript makes this easier by introducing three explicit keywords.
 
-| Visibility  | Description                                                               |
-| ----------- | -------------------------------------------------------------------------- |
-| `public`    | Accessible anywhere; the default when no visibility keyword is given       |
-| `private`   | Accessible only from within the class itself                               |
-| `protected` | Same as `private`, but also accessible from subclasses                     |
+| Visibility | Description |
+| --- | --- |
+| `public` | Accessible anywhere; the default when no visibility keyword is given |
+| `private` | Accessible only from within the class itself |
+| `protected` | Same as `private`, but also accessible from subclasses |
 
 > **Key Insight:** Visibility keywords are a compile-time-only check. They're erased once TypeScript compiles to JavaScript, so don't rely on them as a runtime security boundary — use JavaScript's `#` private fields if you need real runtime privacy.
 
@@ -621,6 +681,8 @@ describe("Visibility", () => {
 });
 ```
 
+> **Note:** `DoubleCounter` can touch `this.counter` only because it's `protected`. Had it been `private`, the subclass would be rejected at compile time — even though the property is sitting right there on the object at runtime.
+
 ### Parameter Properties
 
 Constructors often end up with parameters whose only job is to populate a property of the same name. For this case, use **Parameter Properties** — a constructor parameter is automatically turned into a class property by adding a visibility keyword directly on it.
@@ -642,9 +704,13 @@ describe("Parameter Properties", () => {
 });
 ```
 
+> **Tip:** `constructor(public name: string) {}` is exactly equivalent to declaring `name: string` and writing `this.name = name` — TypeScript generates both for you. Any modifier works in that position, so `private`, `protected` and `readonly` shorthands are available too.
+
 ---
 
 ## 🔄 instanceof & Polymorphism
+
+Inheritance creates objects that are several types at once. These are the tools for asking which type you actually hold, and for writing code that doesn't need to ask.
 
 ### The instanceof Operator
 
@@ -672,11 +738,11 @@ describe("Instance of", () => {
 });
 ```
 
+> **Note:** `instanceof` walks the whole prototype chain, so it's `true` for every ancestor as well — a `VicePresident` is `instanceof VicePresident`, `Manager` *and* `Employee`. That's precisely the behaviour [type casting](#type-casting) has to account for.
+
 ### Polymorphism
 
-"Polymorphism" comes from Greek, meaning "many forms." In OOP, polymorphism is an object's ability to take on a different form, and it's closely tied to inheritance.
-
-**Method Polymorphism**
+"Polymorphism" comes from Greek, meaning "many forms." In OOP, polymorphism is an object's ability to take on a different form, and it's closely tied to inheritance. It shows up most often in method parameters:
 
 - When a function or method takes a parameter, you can pass it any polymorphic value that matches
 - For example, a function that takes an `Employee` parameter can also accept a `Manager` or `VicePresident` object
@@ -716,11 +782,13 @@ describe("Polymorphism", () => {
 });
 ```
 
+> **Key Insight:** Polymorphism is what lets `sayHello(employee: Employee)` accept a `Manager` or a `VicePresident` without changing a line. The parameter names the *least* specific type the function actually needs, so every descendant of it is accepted automatically.
+
 ### Type Casting
 
 Basic TypeScript covers type assertions, which let you convert a value from one type to a more specific one. The same technique applies to method polymorphism — combine `instanceof` with a type assertion to safely narrow a polymorphic value.
 
-> ⚠️ **Note:** When type-casting, always check the most specific subclass first. If the order were swapped — checking `Manager` before `VicePresident` — a `VicePresident` object would also match the `Manager` check (since it's a subclass of `Manager` too), so it would stop there and never reach the `VicePresident` branch.
+> **Gotcha:** When type-casting, always check the most specific subclass first. If the order were swapped — checking `Manager` before `VicePresident` — a `VicePresident` object would also match the `Manager` check (since it's a subclass of `Manager` too), so it would stop there and never reach the `VicePresident` branch.
 
 **`oop-typescript/test/polymorphism.test.ts`**
 
@@ -763,6 +831,8 @@ describe("Polymorphism", () => {
   });
 });
 ```
+
+> **Tip:** The `as` casts here are optional. `instanceof` has already narrowed the type inside each branch, so `employee.name` would compile fine on its own — the assertion only makes the intent explicit for a reader.
 
 ---
 
@@ -809,6 +879,10 @@ describe("Abstract Class", () => {
 });
 ```
 
+> **Key Insight:** `abstract` members are a contract the compiler enforces downward — `RegularCustomer` won't compile until it supplies both `name` and `sayHello`. Unlike an interface, an abstract class can also ship finished code (`hello()` here) and constructor logic that every subclass reuses.
+
+> **Gotcha:** `new Customer(1)` is rejected at compile time, but the class is still an ordinary JavaScript class in the emitted output — `abstract`, like every other type-level construct, is erased.
+
 ---
 
 ## ⚡ Static Members
@@ -849,6 +923,8 @@ describe("Static", () => {
 });
 ```
 
+> **Note:** Static members are reached through the class itself — `Configuration.NAME`, `MathUtil.sum(...)` — never through an instance. `new Configuration().NAME` is a compile error, because the member simply doesn't live on the object.
+
 ---
 
 ## 🔗 Class Relationships
@@ -880,6 +956,10 @@ describe("Relationship", () => {
   });
 });
 ```
+
+> **Key Insight:** This is **structural typing** — TypeScript compares shapes, not declarations. `Customer` is assignable to `Person` purely because its public members match, even though neither class mentions the other. Languages like Java use nominal typing, where the same assignment would be rejected outright.
+
+> **Gotcha:** Structural typing has no idea what your classes *mean*. If two shapes must never be confused, give one a distinguishing member — a `private` field is the usual trick, since a class with private members is only ever compatible with itself.
 
 ---
 
@@ -918,6 +998,10 @@ describe("Error Handling", () => {
 });
 ```
 
+> **Gotcha:** Under `"strict": true`, `catch (e)` hands you `unknown`, not `Error` — reaching `e.message` directly is a compile error. The `instanceof ValidationError` check here is what narrows it, which is exactly why a custom error class pays for itself.
+
+> **Note:** `Error` already defines `message`, so the `public message` parameter property merely re-declares it. `super(message)` is the line that matters — it's what populates the built-in message and the stack trace.
+
 ---
 
 ## 📦 Namespace
@@ -953,26 +1037,82 @@ describe("Namespace", () => {
 });
 ```
 
+> **Gotcha:** Namespaces predate ES modules and are largely legacy for application code — note that the test above still reaches `MathUtil` through a plain `import`, because the namespace is `export`ed from a module anyway. Today they earn their place mainly inside `.d.ts` declaration files.
+>
+> Reference: [typescriptlang.org — Namespaces](https://www.typescriptlang.org/docs/handbook/namespaces.html)
+
+---
+
+## 🧭 Object Lifecycle
+
+Most of the surprises in this guide trace back to one fact: a TypeScript class is two things at once — a compile-time type and a runtime JavaScript object. Following `new VicePresident("Dzaru")` shows where each half applies:
+
+```text
+new VicePresident("Dzaru")
+  ↓
+── Compile time ────────────────  checked by tsc, then erased
+  ↓
+Type check                       arguments against the constructor signature
+  ↓
+Visibility check                 public / private / protected
+  ↓
+abstract check                   is this class instantiable at all?
+  ↓
+Erasure                          types, interfaces, visibility, abstract — all removed
+  ↓
+── Runtime ─────────────────────  plain JavaScript from here on
+  ↓
+Allocate the object
+  ↓
+Constructor chain                VicePresident → Manager → Employee, via super(...)
+  ↓                              each parent finishes before its child adds to it
+Field initialization             defaults first, then the constructor body, per level
+  ↓
+Object ready                     prototype chain: VicePresident → Manager → Employee → Object
+  ↓
+employee.sayHello(...)           looked up along that chain — the first match wins
+```
+
+That split explains the behaviour that surprises people throughout this guide:
+
+| Question | Answer |
+| --- | --- |
+| Why does `typeof` return `"object"` for every instance? | At runtime the class is gone and only a plain object with a prototype remains — which is why [`instanceof`](#the-instanceof-operator) exists |
+| Why must `super(...)` come first? | The parent constructor builds the object the child is about to extend, so `this` doesn't exist until it returns |
+| Why can't `private` be trusted as security? | It's enforced during the compile-time half and erased before any code runs |
+| Why does an overridden method win? | Lookup walks the prototype chain from the most specific class upward and stops at the first match |
+| Why does `instanceof Manager` match a `VicePresident`? | It tests the entire prototype chain, not just the immediate class |
+| Why are two unrelated classes assignable? | Assignability is [structural](#-class-relationships) — the checker compares members, never class names |
+
 ---
 
 ## 🎯 Quick Reference
 
-| Concept               | Purpose                                                     | Key Syntax                                |
-| ---------------------- | ------------------------------------------------------------ | -------------------------------------------- |
-| **Class**             | Blueprint for creating objects                               | `class Customer { }`                       |
-| **Constructor**        | Runs once, the first time an object is created                | `constructor(id: number) { ... }`          |
-| **Readonly Property**  | Immutable after construction                                  | `readonly id: number`                      |
-| **Getter / Setter**    | Controlled read/write access to a property                    | `getName()` / `setName(value)`             |
-| **extends**            | Inherit properties and methods from a parent class             | `class Manager extends Employee`           |
-| **implements**         | Enforce an interface's contract on a class                    | `class Person implements HasName`          |
-| **super**              | Call the parent class's constructor or method                 | `super(name)` / `super.sayHello()`         |
-| **Visibility**         | Control where a member can be accessed                        | `public`, `private`, `protected`           |
-| **Parameter Property** | Shorthand that turns a constructor parameter into a property  | `constructor(public name: string)`         |
-| **instanceof**         | Check whether an object is an instance of a class              | `obj instanceof ClassName`                 |
-| **Polymorphism**       | Treat a subclass instance as its parent type                   | `let e: Employee = new Manager(...)`       |
-| **Abstract Class**     | Unfinished base class that can't be instantiated directly       | `abstract class Customer { ... }`          |
-| **static**             | Member that belongs to the class itself, not an instance       | `static NAME: string`                      |
-| **namespace**          | Group related code inside a module                             | `namespace MathUtil { ... }`                |
+| Concept | Purpose | Key Syntax |
+| --- | --- | --- |
+| **Class** | Blueprint for creating objects | `class Customer { }` |
+| **Constructor** | Runs once, the first time an object is created | `constructor(id: number) { ... }` |
+| **Property** | Attribute declared on a class | `name: string` |
+| **Default Value** | Property that starts out with a value | `name: string = "Guest"` |
+| **Optional Property** | Property that may be left unset | `age?: number` |
+| **Readonly Property** | Immutable after construction | `readonly id: number` |
+| **Method** | Function that belongs to a class | `sayHello(name: string): void` |
+| **Getter / Setter** | Controlled read/write access to a property | `get name()` / `set name(value)` |
+| **extends** | Inherit properties and methods from a parent class | `class Manager extends Employee` |
+| **implements** | Enforce an interface's contract on a class | `class Person implements HasName` |
+| **super** | Call the parent class's constructor or method | `super(name)` / `super.sayHello()` |
+| **Method Overriding** | Replace a parent's method in a subclass | Same signature, redeclared on the child |
+| **Visibility** | Control where a member can be accessed | `public`, `private`, `protected` |
+| **Parameter Property** | Shorthand that turns a constructor parameter into a property | `constructor(public name: string)` |
+| **instanceof** | Check whether an object is an instance of a class | `obj instanceof ClassName` |
+| **Polymorphism** | Treat a subclass instance as its parent type | `let e: Employee = new Manager(...)` |
+| **Type Casting** | Narrow a polymorphic value to a subclass | `employee as VicePresident` |
+| **Abstract Class** | Unfinished base class that can't be instantiated directly | `abstract class Customer { ... }` |
+| **Abstract Member** | Member every subclass is required to supply | `abstract sayHello(name: string): void` |
+| **static** | Member that belongs to the class itself, not an instance | `static NAME: string` |
+| **Structural Typing** | Matching shapes make matching types | `const p: Person = new Customer(...)` |
+| **Custom Error** | Domain-specific error type | `class ValidationError extends Error` |
+| **namespace** | Group related code inside a module | `namespace MathUtil { ... }` |
 
 ---
 
@@ -981,10 +1121,16 @@ describe("Namespace", () => {
 **✅ Do This**
 
 - **Order `instanceof` checks from most specific to least specific** — check subclasses before their parent class when type-casting a polymorphic value
+- **Let `instanceof` do the narrowing** — inside the branch the type is already narrowed, so an `as` cast is usually redundant
 - **Use `protected` instead of `private`** when a subclass legitimately needs access to a parent's member
 - **Use Parameter Properties** to cut down constructor boilerplate for simple data-holding classes
+- **Call `super(...)` first** in a subclass constructor, before touching `this`
+- **Turn on `noImplicitOverride`** so an override that stops matching its parent is caught instead of silently becoming a new method
 - **Use `abstract` classes** to enforce a shared contract across subclasses without allowing direct instantiation
+- **Prefer `implements` when you only need a contract** — a class can implement many interfaces but extend just one parent
+- **Reach for real `get`/`set` accessors** when you want property syntax with validation behind it
 - **Extend `Error`** for domain-specific error types so `catch` blocks can narrow with `instanceof`
+- **Prefer ES modules over namespaces** for organizing application code
 
 **❌ Avoid This**
 
@@ -993,3 +1139,10 @@ describe("Namespace", () => {
 - **Forgetting `super(...)` in a subclass constructor** — TypeScript requires the parent constructor to run before `this` can be used
 - **Relying on `private`/`protected` for security** — they're compile-time-only checks, erased at runtime like other TypeScript types
 - **Assuming structural typing means identical intent** — two classes with matching shapes are assignable to each other even if they model unrelated concepts
+- **Leaving a required property unassigned** — under `strict`, TypeScript rejects a property the constructor never definitely sets
+- **Reading `e.message` straight out of a `catch`** — the variable is `unknown` until you narrow it
+- **Instantiating a class just to reach a `static` member** — statics live on the class itself, not on any object
+- **Using `as` to silence an error you don't understand** — narrow with `instanceof` or fix the type instead
+- **Reaching for a namespace where a module would do** — namespaces are mostly legacy outside `.d.ts` files
+
+> Reference: [TypeScript Handbook — Classes](https://www.typescriptlang.org/docs/handbook/2/classes.html) · [Namespaces](https://www.typescriptlang.org/docs/handbook/namespaces.html) · [tsconfig reference](https://www.typescriptlang.org/tsconfig)
