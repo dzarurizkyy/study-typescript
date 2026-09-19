@@ -2,6 +2,49 @@
 
 This repository contains a comprehensive reference guide for TypeScript — covering the language fundamentals, object-oriented programming, generics, runtime validation, and a complete RESTful API built end-to-end with Express, Prisma, and PostgreSQL.
 
+## Installation 🔧
+
+1. **Install Node.js**:
+   - Download the **LTS** version from `https://nodejs.org/`
+   - Verify the installation:
+
+     ```bash
+     node -v
+     npm -v
+     ```
+
+2. **Clone the Repository**:
+
+   ```bash
+   git clone https://github.com/dzarurizkyy/study-typescript.git
+   cd study-typescript
+   ```
+
+3. **Install TypeScript** (inside a chapter's project folder):
+
+   ```bash
+   npm install --save-dev typescript
+   ```
+
+   - Generate `tsconfig.json`:
+
+     ```bash
+     npx tsc --init
+     ```
+
+   - Verify the installation:
+
+     ```bash
+     npx tsc -v
+     ```
+
+   > TypeScript is installed **locally per project** (`--save-dev`), not globally — that's why every command across this guide uses `npx tsc` instead of a bare `tsc`.
+
+4. **Follow Along Per Chapter**:
+   - Start with [TypeScript Basics](001-typescript-basics.md) — every later chapter builds on the same toolchain
+
+   > Each chapter is a **separate** project — there is no single root `package.json`. Repeat step 3 inside each chapter's own project folder ([001](001-typescript-basics.md), [002](002-typescript-oop.md), [003](003-typescript-generic.md), [004](004-typescript-validation.md), [005](005-typescript-study-case.md)).
+
 ## List of Material 📚
 
 - 📘 **[TypeScript Basics](001-typescript-basics.md)**
@@ -63,7 +106,7 @@ This repository contains a comprehensive reference guide for TypeScript — cove
   const result = schema.parse(request);
   ```
 
-- 🚀 **[TypeScript RESTful API — Contact Management](005-typescript-restful-api.md)**
+- 🚀 **[TypeScript RESTful API — Contact Management](005-typescript-study-case.md)**
 
   A full RESTful API built stage by stage across three modules — User → Contact → Address — using Express, Prisma, PostgreSQL, Zod, and Jest:
 

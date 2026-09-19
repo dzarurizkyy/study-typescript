@@ -137,15 +137,7 @@ npm install --save-dev babel-jest @babel/preset-env
 
 ### Setting Up the TypeScript Project
 
-```bash
-npm install --save-dev typescript
-```
-
-> Reference: [npmjs.com/package/typescript](https://www.npmjs.com/package/typescript)
-
-```bash
-npx tsc --init
-```
+> Installing TypeScript itself and generating `tsconfig.json` (`npm install --save-dev typescript` + `npx tsc --init`) is covered once in the repository's [README](README.md#installation-).
 
 - All compiler configuration is generated into `tsconfig.json`
 - Change `"module"` from `"commonjs"` to `"ES6"`

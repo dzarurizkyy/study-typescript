@@ -18,7 +18,6 @@ Study notes for building a RESTful API for **Contact Management** using TypeScri
   - [Adding Babel](#adding-babel)
   - [Setting Up TypeScript for Jest](#setting-up-typescript-for-jest)
   - [Adding Supertest](#adding-supertest)
-  - [Adding TypeScript](#adding-typescript)
   - [Setting Up the TypeScript Project](#setting-up-the-typescript-project)
 - [Database Design](#-database-design)
   - [Setting Up the Database](#setting-up-the-database)
@@ -173,19 +172,9 @@ npm install --save-dev supertest @types/supertest
 
 > Reference: [npmjs.com/package/supertest](https://www.npmjs.com/package/supertest)
 
-### Adding TypeScript
-
-```bash
-npm install --save-dev typescript
-```
-
-> Reference: [npmjs.com/package/typescript](https://www.npmjs.com/package/typescript)
-
 ### Setting Up the TypeScript Project
 
-```bash
-npx tsc --init
-```
+> Installing TypeScript itself and generating `tsconfig.json` (`npm install --save-dev typescript` + `npx tsc --init`) is covered once in the repository's [README](README.md#installation-).
 
 All compiler configuration is generated into `tsconfig.json`. What needs to change:
 

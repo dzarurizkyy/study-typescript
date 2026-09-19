@@ -13,7 +13,6 @@ A practical reference guide for generics in TypeScript — covering generic clas
   - [Creating the Project](#creating-the-project)
   - [Adding Jest for Unit Testing](#adding-jest-for-unit-testing)
   - [Adding Babel](#adding-babel)
-  - [Adding TypeScript](#adding-typescript)
   - [Setting Up the TypeScript Project](#setting-up-the-typescript-project)
   - [Setting Up TypeScript for Jest](#setting-up-typescript-for-jest)
 - [Without Generic](#-without-generic)
@@ -88,19 +87,9 @@ npm install --save-dev babel-jest @babel/preset-env
 
 > Reference: [babeljs.io/setup#installation](https://babeljs.io/setup#installation)
 
-### Adding TypeScript
-
-```bash
-npm install --save-dev typescript
-```
-
-> Reference: [npmjs.com/package/typescript](https://www.npmjs.com/package/typescript)
-
 ### Setting Up the TypeScript Project
 
-```bash
-npx tsc --init
-```
+> Installing TypeScript itself and generating `tsconfig.json` (`npm install --save-dev typescript` + `npx tsc --init`) is covered once in the repository's [README](README.md#installation-).
 
 - All compiler configuration is generated into `tsconfig.json`
 - Change `"module"` from `"commonjs"` to `"ES6"`
