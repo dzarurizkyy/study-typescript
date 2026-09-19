@@ -30,9 +30,11 @@ This repository contains a comprehensive reference guide for TypeScript — cove
 
    - Open `package.json` and add `"type": "module"`
 
+    <br />
+   
    > **Note:** `"type": "module"` switches `package.json` to native ES modules, which is why every example in this guide uses `import`/`export` syntax instead of CommonJS `require`.
 
-4. **Add Jest for Unit Testing** (inside the project folder):
+5. **Add Jest for Unit Testing** (inside the project folder):
 
    ```bash
    npm install --save-dev jest @types/jest
@@ -40,7 +42,7 @@ This repository contains a comprehensive reference guide for TypeScript — cove
 
    > Reference: [npmjs.com/package/jest](https://www.npmjs.com/package/jest)
 
-5. **Add Babel**:
+6. **Add Babel**:
 
    ```bash
    npm install --save-dev babel-jest @babel/preset-env
@@ -48,7 +50,7 @@ This repository contains a comprehensive reference guide for TypeScript — cove
 
    > Reference: [babeljs.io/setup#installation](https://babeljs.io/setup#installation)
 
-6. **Install TypeScript**:
+7. **Install TypeScript**:
 
    ```bash
    npm install --save-dev typescript
@@ -68,7 +70,7 @@ This repository contains a comprehensive reference guide for TypeScript — cove
 
    > TypeScript is installed **locally per project** (`--save-dev`), not globally — that's why every command across this guide uses `npx tsc` instead of a bare `tsc`.
 
-7. **Set Up TypeScript for Jest**:
+8. **Set Up TypeScript for Jest**:
 
    ```bash
    npm install --save-dev @babel/preset-typescript
@@ -85,7 +87,7 @@ This repository contains a comprehensive reference guide for TypeScript — cove
      }
      ```
 
-8. **Follow Along Per Chapter**:
+9. **Follow Along Per Chapter**:
    - Start with [TypeScript Basics](001-typescript-basics.md) — every later chapter builds on the same toolchain
 
 ## List of Material 📚
