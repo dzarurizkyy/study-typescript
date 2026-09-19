@@ -9,7 +9,6 @@ A practical reference guide for generics in TypeScript — covering generic clas
 - [Introduction](#-introduction)
   - [What is Generic?](#what-is-generic)
   - [Naming Conventions](#naming-conventions)
-- [Setting Up TypeScript for Jest](#-setting-up-typescript-for-jest)
 - [Without Generic](#-without-generic)
 - [Generic Class](#-generic-class)
 - [Generic Function](#-generic-function)
@@ -54,102 +53,9 @@ Single-letter names are a convention, not a rule — but following them makes ge
 
 ---
 
-## 🧪 Setting Up TypeScript for Jest
-
-> Project setup (creating the project, Jest, Babel, and TypeScript) is covered once in the repository's [README](README.md#installation-) — this chapter's project folder is `belajar-typescript-generic`.
-
-**`generic-typescript/package.json`**
-
-```json
-{
-  "name": "generic-typescript",
-  "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "test": "jest"
-  },
-  "jest": {
-    "transform": {
-      "^.+\\.[t|j]sx?$": "babel-jest"
-    }
-  },
-  "author": "Dzaru Rizky Fathan Fortuna",
-  "license": "ISC",
-  "description": "",
-  "devDependencies": {
-    "@babel/preset-env": "^7.29.7",
-    "@babel/preset-typescript": "^7.29.7",
-    "@jest/globals": "^30.4.1",
-    "@types/jest": "^30.0.0",
-    "babel-jest": "^30.4.1",
-    "jest": "^30.4.2",
-    "typescript": "^6.0.3"
-  }
-}
-```
-
-**`generic-typescript/babel.config.json`**
-
-```json
-{
-  "presets": ["@babel/preset-env", "@babel/preset-typescript"]
-}
-```
-
-**`generic-typescript/tsconfig.json`**
-
-```json
-{
-  // Visit https://aka.ms/tsconfig to read more about this file
-  "compilerOptions": {
-    // File Layout
-    // "rootDir": "./src",
-    // "outDir": "./dist",
-
-    // Environment Settings
-    // See also https://aka.ms/tsconfig/module
-    "module": "es6",
-    "target": "es6",
-    "types": ["jest"],
-    // For nodejs:
-    // "lib": ["esnext"],
-    // "types": ["node"],
-    // and npm install -D @types/node
-
-    // Other Outputs
-    "sourceMap": true,
-    "declaration": true,
-    "declarationMap": true,
-
-    // Stricter Typechecking Options
-    "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
-
-    // Style Options
-    // "noImplicitReturns": true,
-    // "noImplicitOverride": true,
-    // "noUnusedLocals": true,
-    // "noUnusedParameters": true,
-    // "noFallthroughCasesInSwitch": true,
-    // "noPropertyAccessFromIndexSignature": true,
-
-    // Recommended Options
-    "strict": true,
-    "jsx": "react-jsx",
-    "verbatimModuleSyntax": true,
-    "isolatedModules": true,
-    "noUncheckedSideEffectImports": true,
-    "moduleDetection": "force",
-    "skipLibCheck": true
-  }
-}
-```
+## 🚫 Without Generic
 
 > **Key Insight:** This project's Jest transform is `babel-jest`, which only strips TypeScript's types away — it never checks them. That means a type error can slip past `npm test` completely and only surface as a runtime crash. Run `npx tsc --noEmit` (or use `ts-jest` instead of `babel-jest`) whenever you actually want type errors caught before runtime.
-
----
-
-## 🚫 Without Generic
 
 Without generics, a class meant to hold values of varying types has to fall back to `any`. That buys flexibility, but it throws away every compile-time guarantee TypeScript normally gives you — mismatched usage only blows up once the code actually runs.
 
@@ -459,7 +365,7 @@ describe("generic", () => {
 });
 ```
 
-> **Gotcha:** `SimpleGeneric` has no constructor that uses `T`, so `new SimpleGeneric()` gives TypeScript nothing to infer a concrete type from — `T` silently falls back to `unknown`, which is why `setValue` happily accepts both `"Dzaru"` and `100` right after each other. Because `babel-jest` strips types instead of checking them (see the [Setting Up TypeScript for Jest](#-setting-up-typescript-for-jest) note above), that mistake isn't caught until the commented-out line actually runs, producing `TypeError: simpleGeneric.getValue(...).toUpperCase is not a function`. That's why it stays commented out here.
+> **Gotcha:** `SimpleGeneric` has no constructor that uses `T`, so `new SimpleGeneric()` gives TypeScript nothing to infer a concrete type from — `T` silently falls back to `unknown`, which is why `setValue` happily accepts both `"Dzaru"` and `100` right after each other. Because `babel-jest` strips types instead of checking them (see the [Without Generic](#-without-generic) note above), that mistake isn't caught until the commented-out line actually runs, producing `TypeError: simpleGeneric.getValue(...).toUpperCase is not a function`. That's why it stays commented out here.
 
 ---
 

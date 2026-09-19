@@ -8,7 +8,6 @@ A practical reference guide for data validation in TypeScript — covering schem
 
 - [Introduction](#-introduction)
   - [What is Validation?](#what-is-validation)
-- [Setting Up TypeScript for Jest](#-setting-up-typescript-for-jest)
 - [Installing Zod](#-installing-zod)
 - [Schema](#-schema)
 - [Validating Primitive Data Types](#-validating-primitive-data-types)
@@ -44,84 +43,6 @@ TypeScript unfortunately doesn't ship a built-in validation library, so validati
 
 ---
 
-## 🔧 Setting Up TypeScript for Jest
-
-> Project setup (creating the project, Jest, Babel, and TypeScript) is covered once in the repository's [README](README.md#installation-) — this chapter's project folder is `study-typescript-validation`.
-
-**`study-typescript-validation/package.json`**
-
-```json
-{
-  "name": "study-typescript-validation",
-  "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "test": "jest"
-  },
-  "jest": {
-    "transform": {
-      "^.+\\.[t|j]sx?$": "babel-jest"
-    }
-  },
-  "author": "Dzaru Rizky Fathan Fortuna",
-  "license": "ISC",
-  "description": "",
-  "type": "module",
-  "devDependencies": {
-    "@babel/preset-env": "^7.29.7",
-    "@babel/preset-typescript": "^7.29.7",
-    "@jest/globals": "^30.4.1",
-    "@types/jest": "^30.0.0",
-    "babel-jest": "^30.4.1",
-    "jest": "^30.4.2",
-    "typescript": "^6.0.3"
-  },
-  "dependencies": {
-    "zod": "^4.4.3"
-  }
-}
-```
-
-**`study-typescript-validation/babel.config.json`**
-
-```json
-{
-  "presets": ["@babel/preset-env", "@babel/preset-typescript"]
-}
-```
-
-**`study-typescript-validation/tsconfig.json`**
-
-```json
-{
-  "compilerOptions": {
-    "module": "es6",
-    "moduleResolution": "bundler",
-    "target": "es6",
-    "types": ["jest"],
-
-    "sourceMap": true,
-    "declaration": true,
-    "declarationMap": true,
-
-    "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
-
-    "strict": true,
-    "jsx": "react-jsx",
-    "verbatimModuleSyntax": true,
-    "isolatedModules": true,
-    "noUncheckedSideEffectImports": true,
-    "moduleDetection": "force",
-    "skipLibCheck": true
-  }
-}
-```
-
-> **Key Insight:** setting `"module": "es6"` without an explicit `moduleResolution` leaves TypeScript on its legacy `"Classic"` resolution strategy, which ignores the `"exports"` field in a package's `package.json`. Zod v4 exposes its ESM/CJS builds through `exports`, so without `moduleResolution` set, TypeScript reports `Cannot find module 'zod'` (`ts(2792)`) even though the package is installed in `node_modules`. Setting `"moduleResolution": "bundler"` fixes it — it understands `exports` maps while still leaving the actual transpilation to Babel.
-
----
-
 ## 📥 Installing Zod
 
 ```bash
@@ -129,6 +50,8 @@ npm install zod
 ```
 
 > Reference: [zod.dev](https://zod.dev/)
+
+> **Key Insight:** Setting `"module": "es6"` in `tsconfig.json` without an explicit `moduleResolution` leaves TypeScript on its legacy `"Classic"` resolution strategy, which ignores the `"exports"` field in a package's `package.json`. Zod v4 exposes its ESM/CJS builds through `exports`, so without `moduleResolution` set, TypeScript reports `Cannot find module 'zod'` (`ts(2792)`) even though the package is installed in `node_modules`. Setting `"moduleResolution": "bundler"` fixes it — it understands `exports` maps while still leaving the actual transpilation to Babel.
 
 ---
 
