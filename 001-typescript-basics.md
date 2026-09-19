@@ -10,15 +10,9 @@ A practical reference guide for learning TypeScript from scratch — covering pr
   - [What Is TypeScript?](#what-is-typescript)
   - [Why Learn TypeScript?](#why-learn-typescript)
   - [The Toolchain at a Glance](#the-toolchain-at-a-glance)
-- [Project Setup](#-project-setup)
-  - [Creating the Project](#creating-the-project)
-  - [Adding Jest for Unit Testing](#adding-jest-for-unit-testing)
-  - [Adding Babel](#adding-babel)
-  - [Setting Up the TypeScript Project](#setting-up-the-typescript-project)
-  - [Setting Up TypeScript for Jest](#setting-up-typescript-for-jest)
-  - [Say Hello Function](#say-hello-function)
-  - [Compiling TypeScript](#compiling-typescript)
-  - [Include and Exclude](#include-and-exclude)
+- [Say Hello Function](#-say-hello-function)
+- [Compiling TypeScript](#-compiling-typescript)
+- [Include and Exclude](#-include-and-exclude)
 - [Primitive Data Types & Variables](#-primitive-data-types--variables)
   - [Primitive Data Types](#primitive-data-types)
   - [Variable Declaration](#variable-declaration)
@@ -103,42 +97,9 @@ TypeScript is not one tool but several, and knowing which piece does what explai
 
 ---
 
-## 🏗️ Project Setup
+## 👋 Say Hello Function
 
-> **Key Insight:** TypeScript is not a runtime — it is a compiler and a type checker bolted onto JavaScript. Every TypeScript project therefore needs a compilation and testing pipeline before you write a single line of business logic.
-
-### Creating the Project
-
-> Covered once in the repository's [README](README.md#installation-) — this chapter's project folder is `belajar-typescript-dasar`.
-
-### Adding Jest for Unit Testing
-
-> Covered once in the repository's [README](README.md#installation-).
-
-### Adding Babel
-
-> Covered once in the repository's [README](README.md#installation-).
-
-### Setting Up the TypeScript Project
-
-> Installing TypeScript itself and generating `tsconfig.json` (`npm install --save-dev typescript` + `npx tsc --init`) is covered once in the repository's [README](README.md#installation-).
-
-- All compiler configuration is generated into `tsconfig.json`
-- Change `"module"` from `"commonjs"` to `"ES6"`
-
-### Setting Up TypeScript for Jest
-
-> Covered once in the repository's [README](README.md#installation-).
-
-**`basic-typescript/babel.config.json`**
-
-```json
-{
-  "presets": ["@babel/preset-env", "@babel/preset-typescript"]
-}
-```
-
-### Say Hello Function
+> Project setup (creating the project, Jest, Babel, and TypeScript) is covered once in the repository's [README](README.md#installation-) — this chapter's project folder is `belajar-typescript-dasar`.
 
 Before diving into the type system, let's create a simple `sayHello` function in TypeScript and cover it with a unit test.
 
@@ -177,7 +138,9 @@ Test Suites: 2 passed, 2 total
 Tests:       2 passed, 2 total
 ```
 
-### Compiling TypeScript
+---
+
+## 🛠️ Compiling TypeScript
 
 - TypeScript code cannot run directly — it must first be **compiled** into JavaScript
 - Compile with `npx tsc`
@@ -185,7 +148,9 @@ Tests:       2 passed, 2 total
 - Most TypeScript projects separate compiled output into its own folder, typically `dist` (distribution)
 - Change the output location via `tsconfig.json`
 
-### Include and Exclude
+---
+
+## 📂 Include and Exclude
 
 By default, TypeScript tries to compile every `.ts` file it finds. Usually you only want to compile source code — not unit tests.
 
@@ -1222,7 +1187,7 @@ That split explains the behaviour that surprises people throughout this guide:
 | Why does a [type assertion](#type-assertions) fail at runtime? | `as` changes what the checker believes, and nothing survives to runtime to verify it |
 | Why does an `enum` exist at runtime when an `interface` doesn't? | `enum` emits a real JavaScript object; `interface` and `type` emit nothing at all |
 | Why does an optional parameter need a guard? | `?` widens the type to include `undefined`, and `strict` mode forces you to handle it |
-| Why was my new `.ts` file never compiled? | [`include` and `exclude`](#include-and-exclude) in `tsconfig.json` decide what `tsc` even looks at |
+| Why was my new `.ts` file never compiled? | [`include` and `exclude`](#-include-and-exclude) in `tsconfig.json` decide what `tsc` even looks at |
 
 ---
 

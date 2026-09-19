@@ -8,13 +8,8 @@ A practical reference guide for data validation in TypeScript — covering schem
 
 - [Introduction](#-introduction)
   - [What is Validation?](#what-is-validation)
-- [Project Setup](#-project-setup)
-  - [Creating the Project](#creating-the-project)
-  - [Adding Jest for Unit Testing](#adding-jest-for-unit-testing)
-  - [Adding Babel](#adding-babel)
-  - [Setting Up the TypeScript Project](#setting-up-the-typescript-project)
-  - [Setting Up TypeScript for Jest](#setting-up-typescript-for-jest)
-  - [Installing Zod](#installing-zod)
+- [Setting Up TypeScript for Jest](#-setting-up-typescript-for-jest)
+- [Installing Zod](#-installing-zod)
 - [Schema](#-schema)
 - [Validating Primitive Data Types](#-validating-primitive-data-types)
 - [Data Type Conversion](#-data-type-conversion)
@@ -49,30 +44,9 @@ TypeScript unfortunately doesn't ship a built-in validation library, so validati
 
 ---
 
-## 🏗️ Project Setup
+## 🔧 Setting Up TypeScript for Jest
 
-### Creating the Project
-
-> Covered once in the repository's [README](README.md#installation-) — this chapter's project folder is `study-typescript-validation`.
-
-### Adding Jest for Unit Testing
-
-> Covered once in the repository's [README](README.md#installation-).
-
-### Adding Babel
-
-> Covered once in the repository's [README](README.md#installation-).
-
-### Setting Up the TypeScript Project
-
-> Installing TypeScript itself and generating `tsconfig.json` (`npm install --save-dev typescript` + `npx tsc --init`) is covered once in the repository's [README](README.md#installation-).
-
-- All compiler configuration is generated into `tsconfig.json`
-- Change `"module"` from `"commonjs"` to `"ES6"`
-
-### Setting Up TypeScript for Jest
-
-> Covered once in the repository's [README](README.md#installation-).
+> Project setup (creating the project, Jest, Babel, and TypeScript) is covered once in the repository's [README](README.md#installation-) — this chapter's project folder is `study-typescript-validation`.
 
 **`study-typescript-validation/package.json`**
 
@@ -146,7 +120,9 @@ TypeScript unfortunately doesn't ship a built-in validation library, so validati
 
 > **Key Insight:** setting `"module": "es6"` without an explicit `moduleResolution` leaves TypeScript on its legacy `"Classic"` resolution strategy, which ignores the `"exports"` field in a package's `package.json`. Zod v4 exposes its ESM/CJS builds through `exports`, so without `moduleResolution` set, TypeScript reports `Cannot find module 'zod'` (`ts(2792)`) even though the package is installed in `node_modules`. Setting `"moduleResolution": "bundler"` fixes it — it understands `exports` maps while still leaving the actual transpilation to Babel.
 
-### Installing Zod
+---
+
+## 📥 Installing Zod
 
 ```bash
 npm install zod

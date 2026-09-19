@@ -12,12 +12,7 @@ A practical reference guide for object-oriented programming in TypeScript — co
   - [What is a Class?](#what-is-a-class)
   - [Terminology at a Glance](#terminology-at-a-glance)
   - [OOP in TypeScript](#oop-in-typescript)
-- [Project Setup](#-project-setup)
-  - [Creating the Project](#creating-the-project)
-  - [Adding Jest for Unit Testing](#adding-jest-for-unit-testing)
-  - [Adding Babel](#adding-babel)
-  - [Setting Up the TypeScript Project](#setting-up-the-typescript-project)
-  - [Setting Up TypeScript for Jest](#setting-up-typescript-for-jest)
+- [Setting Up TypeScript for Jest](#-setting-up-typescript-for-jest)
 - [Class Basics](#-class-basics)
   - [Creating a Class](#creating-a-class)
   - [Constructor](#constructor)
@@ -95,28 +90,9 @@ Every term in this guide maps onto one of a handful of ideas:
 
 ---
 
-## 🏗️ Project Setup
+## 🧪 Setting Up TypeScript for Jest
 
-### Creating the Project
-
-> Covered once in the repository's [README](README.md#installation-) — this chapter's project folder is `belajar-typescript-oop`.
-
-### Adding Jest for Unit Testing
-
-> Covered once in the repository's [README](README.md#installation-).
-
-### Adding Babel
-
-> Covered once in the repository's [README](README.md#installation-).
-
-### Setting Up the TypeScript Project
-
-> Installing TypeScript itself and generating `tsconfig.json` (`npm install --save-dev typescript` + `npx tsc --init`) is covered once in the repository's [README](README.md#installation-).
-
-- All compiler configuration is generated into `tsconfig.json`
-- Change `"module"` from `"commonjs"` to `"ES6"`
-
-### Setting Up TypeScript for Jest
+> Project setup (creating the project, Jest, Babel, and TypeScript) is covered once in the repository's [README](README.md#installation-) — this chapter's project folder is `belajar-typescript-oop`.
 
 > Reference: [jestjs.io/docs/getting-started#using-typescript](https://jestjs.io/docs/getting-started#using-typescript)
 
