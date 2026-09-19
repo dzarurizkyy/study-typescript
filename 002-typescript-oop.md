@@ -109,19 +109,11 @@ npm init
 
 ### Adding Jest for Unit Testing
 
-```bash
-npm install --save-dev jest @types/jest
-```
-
-> Reference: [npmjs.com/package/jest](https://www.npmjs.com/package/jest)
+> Covered once in the repository's [README](README.md#installation-).
 
 ### Adding Babel
 
-```bash
-npm install --save-dev babel-jest @babel/preset-env
-```
-
-> Reference: [babeljs.io/setup#installation](https://babeljs.io/setup#installation)
+> Covered once in the repository's [README](README.md#installation-).
 
 ### Setting Up the TypeScript Project
 
