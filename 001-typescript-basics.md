@@ -10,6 +10,7 @@ A practical reference guide for learning TypeScript from scratch — covering pr
   - [What Is TypeScript?](#what-is-typescript)
   - [Why Learn TypeScript?](#why-learn-typescript)
   - [The Toolchain at a Glance](#the-toolchain-at-a-glance)
+- [Project Setup](#-project-setup)
 - [Say Hello Function](#-say-hello-function)
 - [Compiling TypeScript](#-compiling-typescript)
 - [Include and Exclude](#-include-and-exclude)
@@ -97,9 +98,87 @@ TypeScript is not one tool but several, and knowing which piece does what explai
 
 ---
 
-## 👋 Say Hello Function
+## 🏗️ Project Setup
 
-> Project setup (creating the project, Jest, Babel, and TypeScript) is covered once in the repository's [README](README.md#installation-) — this chapter's project folder is `belajar-typescript-dasar`.
+> **Key Insight:** TypeScript is not a runtime — it is a compiler and a type checker bolted onto JavaScript. Every TypeScript project therefore needs a compilation and testing pipeline before you write a single line of business logic.
+
+1. **Install Node.js**:
+   - Download the **LTS** version from `https://nodejs.org/`
+   - Verify the installation:
+
+     ```bash
+     node -v
+     npm -v
+     ```
+
+2. **Create the Project**:
+
+   ```bash
+   mkdir belajar-typescript-dasar
+   cd belajar-typescript-dasar
+   npm init
+   ```
+
+   - Open `package.json` and add `"type": "module"`
+
+   > **Note:** `"type": "module"` switches `package.json` to native ES modules, which is why every example in this guide uses `import`/`export` syntax instead of CommonJS `require`.
+
+3. **Add Jest for Unit Testing**:
+
+   ```bash
+   npm install --save-dev jest @types/jest
+   ```
+
+   > Reference: [npmjs.com/package/jest](https://www.npmjs.com/package/jest)
+
+4. **Add Babel**:
+
+   ```bash
+   npm install --save-dev babel-jest @babel/preset-env
+   ```
+
+   > Reference: [babeljs.io/setup#installation](https://babeljs.io/setup#installation)
+
+5. **Install TypeScript**:
+
+   ```bash
+   npm install --save-dev typescript
+   ```
+
+   - Generate `tsconfig.json`:
+
+     ```bash
+     npx tsc --init
+     ```
+
+   - Verify the installation:
+
+     ```bash
+     npx tsc -v
+     ```
+
+   > TypeScript is installed **locally per project** (`--save-dev`), not globally — that's why every command in this guide uses `npx tsc` instead of a bare `tsc`.
+
+6. **Set Up TypeScript for Jest**:
+
+   ```bash
+   npm install --save-dev @babel/preset-typescript
+   npm install --save-dev @jest/globals
+   ```
+
+   > Reference: [jestjs.io/docs/getting-started#using-typescript](https://jestjs.io/docs/getting-started#using-typescript)
+
+   - **`basic-typescript/babel.config.json`**:
+
+     ```json
+     {
+       "presets": ["@babel/preset-env", "@babel/preset-typescript"]
+     }
+     ```
+
+---
+
+## 👋 Say Hello Function
 
 Before diving into the type system, let's create a simple `sayHello` function in TypeScript and cover it with a unit test.
 
