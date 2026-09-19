@@ -109,15 +109,7 @@ TypeScript is not one tool but several, and knowing which piece does what explai
 
 ### Creating the Project
 
-```bash
-mkdir belajar-typescript-dasar
-cd belajar-typescript-dasar
-npm init
-```
-
-- Open `package.json` and add `"type": "module"`
-
-> **Note:** `"type": "module"` switches `package.json` to native ES modules, which is why every example in this guide uses `import`/`export` syntax instead of CommonJS `require`.
+> Covered once in the repository's [README](README.md#installation-) — this chapter's project folder is `belajar-typescript-dasar`.
 
 ### Adding Jest for Unit Testing
 

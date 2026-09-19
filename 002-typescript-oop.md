@@ -99,13 +99,7 @@ Every term in this guide maps onto one of a handful of ideas:
 
 ### Creating the Project
 
-```bash
-mkdir belajar-typescript-oop
-cd belajar-typescript-oop
-npm init
-```
-
-- Open `package.json` and add `"type": "module"`
+> Covered once in the repository's [README](README.md#installation-) — this chapter's project folder is `belajar-typescript-oop`.
 
 ### Adding Jest for Unit Testing
 

@@ -53,13 +53,7 @@ TypeScript unfortunately doesn't ship a built-in validation library, so validati
 
 ### Creating the Project
 
-```bash
-mkdir study-typescript-validation
-cd study-typescript-validation
-npm init
-```
-
-- Open `package.json` and add `"type": "module"`
+> Covered once in the repository's [README](README.md#installation-) — this chapter's project folder is `study-typescript-validation`.
 
 ### Adding Jest for Unit Testing
 

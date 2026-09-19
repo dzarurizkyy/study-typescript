@@ -63,13 +63,7 @@ Single-letter names are a convention, not a rule — but following them makes ge
 
 ### Creating the Project
 
-```bash
-mkdir belajar-typescript-generic
-cd belajar-typescript-generic
-npm init
-```
-
-- Open `package.json` and add `"type": "module"`
+> Covered once in the repository's [README](README.md#installation-) — this chapter's project folder is `belajar-typescript-generic`.
 
 ### Adding Jest for Unit Testing
 
