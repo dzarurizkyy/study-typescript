@@ -136,13 +136,7 @@ npm init
 
 ### Setting Up TypeScript for Jest
 
-> Reference: [jestjs.io/docs/getting-started#using-typescript](https://jestjs.io/docs/getting-started#using-typescript)
-
-```bash
-npm install --save-dev @babel/preset-typescript
-npm install --save-dev @jest/globals
-npm install --save-dev @types/jest
-```
+> Covered once in the repository's [README](README.md#installation-).
 
 **`basic-typescript/babel.config.json`**
 

@@ -56,10 +56,21 @@ This repository contains a comprehensive reference guide for TypeScript — cove
 
    > TypeScript is installed **locally per project** (`--save-dev`), not globally — that's why every command across this guide uses `npx tsc` instead of a bare `tsc`.
 
-6. **Follow Along Per Chapter**:
+6. **Set Up TypeScript for Jest**:
+
+   ```bash
+   npm install --save-dev @babel/preset-typescript
+   npm install --save-dev @jest/globals
+   ```
+
+   > Reference: [jestjs.io/docs/getting-started#using-typescript](https://jestjs.io/docs/getting-started#using-typescript)
+   >
+   > [TypeScript Object-Oriented Programming](002-typescript-oop.md) uses `ts-jest` instead of `@jest/globals` — that chapter documents its own setup.
+
+7. **Follow Along Per Chapter**:
    - Start with [TypeScript Basics](001-typescript-basics.md) — every later chapter builds on the same toolchain
 
-   > Each chapter is a **separate** project — there is no single root `package.json`. Repeat steps 3–5 inside each chapter's own project folder ([001](001-typescript-basics.md), [002](002-typescript-oop.md), [003](003-typescript-generic.md), [004](004-typescript-validation.md), [005](005-typescript-study-case.md)).
+   > Each chapter is a **separate** project — there is no single root `package.json`. Repeat steps 3–6 inside each chapter's own project folder ([001](001-typescript-basics.md), [002](002-typescript-oop.md), [003](003-typescript-generic.md), [004](004-typescript-validation.md), [005](005-typescript-study-case.md)).
 
 ## List of Material 📚
 
