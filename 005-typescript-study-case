@@ -8,20 +8,40 @@ Study notes for building a RESTful API for **Contact Management** using TypeScri
 
 - [Requirement](#-requirement)
 - [Project Setup](#-project-setup)
+  - [Creating the Project](#creating-the-project)
+  - [Adding Zod](#adding-zod)
+  - [Adding ExpressJS](#adding-expressjs)
+  - [Adding Prisma](#adding-prisma)
+  - [Adding Winston](#adding-winston)
+  - [Adding BCrypt](#adding-bcrypt)
+  - [Adding Jest for Unit Testing](#adding-jest-for-unit-testing)
+  - [Adding Babel](#adding-babel)
+  - [Setting Up TypeScript for Jest](#setting-up-typescript-for-jest)
+  - [Adding Supertest](#adding-supertest)
+  - [Adding TypeScript](#adding-typescript)
+  - [Setting Up the TypeScript Project](#setting-up-the-typescript-project)
 - [Database Design](#-database-design)
+  - [Setting Up the Database](#setting-up-the-database)
+  - [Setting Up Prisma](#setting-up-prisma)
+  - [User Model](#user-model)
+  - [Contact Model](#contact-model)
+  - [Address Model](#address-model)
 - [Application Foundation](#-application-foundation)
 - [Part 1 — User Management](#-part-1--user-management)
+  - [User API Spec](#user-api-spec)
   - [Stage 1: Register User](#stage-1-register-user)
   - [Stage 2: Login User](#stage-2-login-user)
   - [Stage 3: Get Current User](#stage-3-get-current-user)
   - [Stage 4: Update User](#stage-4-update-user)
   - [Stage 5: Logout User](#stage-5-logout-user)
 - [Part 2 — Contact Management](#-part-2--contact-management)
+  - [Contact API Spec](#contact-api-spec)
   - [Stage 1: Create Contact](#stage-1-create-contact)
   - [Stage 2: Get Contact](#stage-2-get-contact)
   - [Stage 3: Update & Delete Contact](#stage-3-update--delete-contact)
   - [Stage 4: Search Contact](#stage-4-search-contact)
 - [Part 3 — Address Management](#-part-3--address-management)
+  - [Address API Spec](#address-api-spec)
   - [Stage 1: Create Address](#stage-1-create-address)
   - [Stage 2: Get Address](#stage-2-get-address)
   - [Stage 3: Update Address](#stage-3-update-address)
@@ -30,6 +50,8 @@ Study notes for building a RESTful API for **Contact Management** using TypeScri
 - [Running the Project](#-running-the-project)
 - [Manual Testing](#-manual-testing)
 - [Quick Reference](#-quick-reference)
+  - [All Endpoints](#all-endpoints)
+  - [Folder Structure](#folder-structure)
 - [Key Takeaways](#-key-takeaways)
 
 ---
@@ -206,7 +228,7 @@ All compiler configuration is generated into `tsconfig.json`. What needs to chan
 
 ### Setting Up the Database
 
-```
+```text
 dzarurizky@MacBook-Air-Dzaru test % psql -h localhost -p 5432 -U postgres
 Password for user postgres:
 psql (17.9 (Homebrew), server 17.1)
@@ -420,7 +442,7 @@ ALTER COLUMN "city" DROP NOT NULL,
 ALTER COLUMN "province" DROP NOT NULL;
 ```
 
-> ⚠️ **Note:** this `NOT NULL` → nullable change is a plain additive migration (`ALTER TABLE`), not a `prisma migrate reset`. If the table already has data, `ALTER COLUMN ... DROP NOT NULL` is safe to run without losing data.
+> ⚠️ **Note:** This `NOT NULL` → nullable change is a plain additive migration (`ALTER TABLE`), not a `prisma migrate reset`. If the table already has data, `ALTER COLUMN ... DROP NOT NULL` is safe to run without losing data.
 
 ---
 
@@ -544,7 +566,7 @@ web.listen(port, () => {
 ### User API Spec
 
 | Method | Endpoint | Auth | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | POST | `/api/users` | - | Register a new user |
 | POST | `/api/users/login` | - | Login, receive a token |
 | GET | `/api/users/current` | ✅ | Get the logged-in user's data |
@@ -1169,7 +1191,7 @@ describe("GET /api/users/current", () => {
 });
 ```
 
-> Note: `UserTest.create()` at this stage is set with `token: "test"` so requests in tests can authenticate immediately without logging in first — see the final `test-util.ts` in [Stage 4](#stage-4-update-user).
+> **Note:** `UserTest.create()` at this stage is set with `token: "test"` so requests in tests can authenticate immediately without logging in first — see the final `test-util.ts` in [Stage 4](#stage-4-update-user).
 
 ---
 
@@ -1449,7 +1471,7 @@ With this, all of **User Management** is done: Register → Login → Get Curren
 ### Contact API Spec
 
 | Method | Endpoint | Auth | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | POST | `/api/contacts` | ✅ | Create a new contact |
 | GET | `/api/contacts/:contactId` | ✅ | Get one contact's detail |
 | PUT | `/api/contacts/:contactId` | ✅ | Update a contact |
@@ -1457,7 +1479,7 @@ With this, all of **User Management** is done: Register → Login → Get Curren
 | GET | `/api/contacts` | ✅ | Search + pagination |
 
 > Full request/response spec lives in [`doc/contact.md`](doc/contact.md).
-
+>
 > **Key Insight:** Every Contact API sits behind `authMiddleware`, and every contact query always filters by `username: user.username`. This prevents user A from reading/modifying user B's contact even if they know the ID (Insecure Direct Object Reference).
 
 ---
@@ -2129,12 +2151,12 @@ Contact Management is done: Create → Get → Update/Delete → Search.
 
 ## 🏠 Part 3 — Address Management
 
-> ⚠️ **This part previously had no implementation notes at all** — only the API spec existed, with no walkthrough. The content below was reconstructed by scanning the source code directly (`src/model/address-model.ts`, `src/validation/address-validation.ts`, `src/service/address-service.ts`, `src/controller/address-controller.ts`, `src/test/address.test.ts`, `src/route/api.ts`, and the Prisma schema) so it's complete and consistent with the Contact Management pattern.
+> ⚠️ **Note:** This part previously had no implementation notes at all — only the API spec existed, with no walkthrough. The content below was reconstructed by scanning the source code directly (`src/model/address-model.ts`, `src/validation/address-validation.ts`, `src/service/address-service.ts`, `src/controller/address-controller.ts`, `src/test/address.test.ts`, `src/route/api.ts`, and the Prisma schema) so it's complete and consistent with the Contact Management pattern.
 
 ### Address API Spec
 
 | Method | Endpoint | Auth | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | POST | `/api/contacts/:contactId/addresses` | ✅ | Create a new address for a contact |
 | GET | `/api/contacts/:contactId/addresses/:addressId` | ✅ | Get one address' detail |
 | PUT | `/api/contacts/:contactId/addresses/:addressId` | ✅ | Update an address |
@@ -2142,7 +2164,7 @@ Contact Management is done: Create → Get → Update/Delete → Search.
 | GET | `/api/contacts/:contactId/addresses` | ✅ | List all addresses of a contact |
 
 > Full request/response spec lives in [`doc/address.md`](doc/address.md).
-
+>
 > **Key Insight:** An address is always accessed **through its contact** — the URL is always shaped like `/api/contacts/:contactId/addresses/...`, never a bare `/api/addresses/:id`. This reinforces the `User → Contact → Address` ownership chain: before an address is checked, its contact must be checked first (and ownership of that contact already guarantees ownership of the addresses beneath it).
 
 ---
@@ -2926,7 +2948,7 @@ All the day-to-day commands are already wired up in `package.json`:
 ```
 
 | Script | Command | When to use it |
-|---|---|---|
+| --- | --- | --- |
 | `npm run migrate` | `npx prisma migrate dev` | Whenever `prisma/schema.prisma` changes (new model, new column, changed constraint). Generates a new migration file under `prisma/migrations`, applies it to the database, **and** regenerates the Prisma Client — this is the command used throughout [Database Design](#-database-design) for the User, Contact, and Address models. |
 | `npm run generate` | `npx prisma generate` | Regenerates the Prisma Client (`src/generated/prisma`) from the current schema **without** creating a migration. Useful when the schema itself hasn't changed locally but the generated client is stale (e.g. after `git pull`, or after `node_modules` was reinstalled). |
 | `npm run build` | `tsc --noEmit false` | Compiles everything in `src/` into plain JavaScript under `dist/` (per `tsconfig.json`'s `rootDir`/`outDir`) — this is the artifact `npm start` runs. |
@@ -3107,7 +3129,7 @@ x-api-token: 53ea080a-bfe5-4658-b2b5-d7d17491fd4e
 6. Run **Add Address**, note its `id`, then swap that ID into **Get/Update/Remove Address** and **List Addresses**.
 7. Deliberately test the failure paths too — an invalid token, a contact/address ID that doesn't belong to you, or a blank required field — and confirm the response matches the API spec's "Failed" shape (`{ "errors": "..." }`) documented earlier in each module.
 
-> ⚠️ **Note:** the `token`, contact `id`s (`3802`, `3803`), and address `id`s (`617`, `618`, `4082`) in the file above are just a snapshot from one past manual run — they will not match your database. Always refresh them from the actual responses before reusing this file.
+> ⚠️ **Note:** The `token`, contact `id`s (`3802`, `3803`), and address `id`s (`617`, `618`, `4082`) in the file above are just a snapshot from one past manual run — they will not match your database. Always refresh them from the actual responses before reusing this file.
 
 ---
 
@@ -3116,7 +3138,7 @@ x-api-token: 53ea080a-bfe5-4658-b2b5-d7d17491fd4e
 ### All Endpoints
 
 | Module | Method | Endpoint | Auth |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | User | POST | `/api/users` | - |
 | User | POST | `/api/users/login` | - |
 | User | GET | `/api/users/current` | ✅ |
@@ -3135,7 +3157,7 @@ x-api-token: 53ea080a-bfe5-4658-b2b5-d7d17491fd4e
 
 ### Folder Structure
 
-```
+```text
 src/
 ├── application/     # web.ts, database.ts, logging.ts
 ├── controller/      # HTTP layer — parse req, call service, shape res
