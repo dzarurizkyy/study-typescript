@@ -121,6 +121,8 @@ TypeScript is not one tool but several, and knowing which piece does what explai
 
    - Open `package.json` and add `"type": "module"`
 
+    <br />
+   
    > **Note:** `"type": "module"` switches `package.json` to native ES modules, which is why every example in this guide uses `import`/`export` syntax instead of CommonJS `require`.
 
 3. **Add Jest for Unit Testing**:
